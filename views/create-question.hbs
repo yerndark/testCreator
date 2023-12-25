@@ -1,0 +1,66 @@
+<!-- views/create-question.hbs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Question</title>
+</head>
+<body>
+  <h1>Create Question for {{formName}}</h1>
+
+  <form action="/question/{{formId}}" method="post">
+    {{#each questions}}
+      <fieldset>
+        <legend>{{this.question}}</legend>
+        <p>Options:</p>
+        <ul>
+          <li>{{this.option1}}</li>
+          <li>{{this.option2}}</li>
+          <li>{{this.option3}}</li>
+        </ul>
+        <p>Correct Option: {{this.correctOption}}</p>
+      </fieldset>
+    {{/each}}
+
+    <hr>
+
+    <label for="question">Question:</label>
+    <input type="text" id="question" name="question" required>
+
+    <label for="option1">Option 1:</label>
+    <input type="text" id="option1" name="option1" required>
+
+    <label for="option2">Option 2:</label>
+    <input type="text" id="option2" name="option2" required>
+
+    <label for="option3">Option 3:</label>
+    <input type="text" id="option3" name="option3" required>
+
+    <label for="correctOption">Correct Option:</label>
+    <select id="correctOption" name="correctOption" required>
+      <option value="1">Option 1</option>
+      <option value="2">Option 2</option>
+      <option value="3">Option 3</option>
+    </select>
+
+    <button type="submit">Save Question</button>
+  </form>
+
+  <!-- The text field -->
+  <input type="text" value="localhost:3000/test/{{formId}}" id="share" disabled>
+
+  <!-- The button used to copy the text -->
+  <button onclick="copyLink()">Get Shareable Link</button>
+</body>
+<script>
+  function copyLink() {
+  var copyText = document.getElementById("share");
+  copyText.select();
+  document.execCommand("copy");
+
+  alert("Copied the text: " + copyText.value);
+}
+</script>
+</html>

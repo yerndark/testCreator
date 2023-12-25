@@ -1,0 +1,124 @@
+<!-- views/create-question.hbs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Question</title>
+</head>
+<body>
+  <h1>Create Question for {{formName}}</h1>
+
+  <form action="/form/{{formId}}/questions" method="post">
+
+    <div id="questions">
+        
+    </div>
+
+    <hr>
+
+    <label for="question">Question:</label>
+    <input type="text" id="question" name="question" required>
+    <br>
+
+    <label for="option1">Option 1:</label>
+    <input type="text" id="option1" name="option1" required>
+    <br>
+
+    <label for="option2">Option 2:</label>
+    <input type="text" id="option2" name="option2" required>
+    <br>
+
+    <label for="option3">Option 3:</label>
+    <input type="text" id="option3" name="option3" required>
+    <br>
+
+    <label for="correctOption">Correct Option:</label>
+    <br>
+    <select id="correctOption" name="correctOption" required>
+      <option value="1">Option 1</option>
+      <option value="2">Option 2</option>
+      <option value="3">Option 3</option>
+    </select>
+
+    <button type="submit">Save Question</button>
+  </form>
+
+  <!-- The text field -->
+  <input type="text" value="localhost:3000/test/{{formId}}" id="share">
+
+  <!-- The button used to copy the text -->
+  <button onclick="copyLink()">Get Shareable Link</button>
+</body>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        let questionsDiv = document.getElementById('questions');
+        fetch('/form/{{formId}}/questions')
+        .then(res => res.json())
+        .then(data => {
+            data.forEach(question => {
+                let fieldset = document.createElement('fieldset');
+                let legend = document.createElement('legend');
+                legend.textContent = question.question;
+
+                let optionsList = document.createElement('ul');
+                let option1 = document.createElement('li');
+                let option2 = document.createElement('li');
+                let option3 = document.createElement('li');
+
+                let deleteDiv = document.createElement('div');
+
+                option1.textContent = question.option1 + ' ' + (question.correctOption === 1 ? '(correct)' : '');
+                option2.textContent = question.option2 + ' ' + (question.correctOption === 2 ? '(correct)' : '');
+                option3.textContent = question.option3 + ' ' + (question.correctOption === 3 ? '(correct)' : '');
+                
+                optionsList.appendChild(option1);
+                optionsList.appendChild(option2);
+                optionsList.appendChild(option3);
+
+                fieldset.appendChild(legend);
+                fieldset.appendChild(optionsList);
+
+                let deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', function () {
+                    deleteQuestion(question.id); 
+                });
+
+                fieldset.appendChild(deleteButton);
+
+                questionsDiv.appendChild(fieldset);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+
+    function deleteQuestion(id) {
+        fetch('/questions/' + id, {
+            method: 'DELETE',
+        })
+        .then(res => res.text())
+        .then(message => {
+            alert(message);
+        })
+        .then(message => {
+            location.reload()
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function copyLink() {
+        var copyText = document.getElementById("share");
+        copyText.select();
+        document.execCommand("copy");
+
+        alert("Copied the text: " + copyText.value);
+    }
+</script>
+</html>

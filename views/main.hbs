@@ -1,0 +1,41 @@
+<!-- views/main.hbs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main</title>
+</head>
+<body>
+  <div>
+    {{#each forms}}
+        <div style="display: flex; gap: 10px">
+            <a href="/test/{{this.id}}">{{this.name}} </a>
+            <a style="color: blue" href="/test/{{this.id}}/results">results</a>
+            <a style="color: red; cursor: pointer" onclick="deleteForm({{this.id}})">delete</a>
+        </div>
+    {{/each}}
+    </div>
+    <a href="/form/create">Create form</a>
+</body>
+
+<script>
+    function deleteForm(id) {
+        fetch('/form/' + id, {
+            method: 'DELETE',
+        })
+        .then(res => res.text())
+        .then(message => {
+            alert(message);
+        })
+        .then(message => {
+            location.reload()
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+</script>
+
+</html>
